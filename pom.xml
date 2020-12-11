@@ -18,13 +18,14 @@
     </properties>
 
     <dependencies>
-        <!-- lombok to reduce get set clutter -->
+        <!-- lombok to reduce get set clutter needsOpenJDK :(
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
+         -->
         <!-- Testing -->
         <dependency>
             <groupId>org.junit.platform</groupId>
