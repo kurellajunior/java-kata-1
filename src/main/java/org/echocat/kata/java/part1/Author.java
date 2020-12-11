@@ -15,4 +15,8 @@ public class Author {
   public String getEMail() {
     return eMail;
   }
+
+  public String getShortDisplay() {
+    return firstName + " " + lastName;
+  }
 }

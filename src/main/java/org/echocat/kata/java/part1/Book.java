@@ -2,6 +2,7 @@ package org.echocat.kata.java.part1;
 
 import java.io.PrintStream;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Book extends PrintMedia{
   private final String description;
@@ -13,6 +14,10 @@ public class Book extends PrintMedia{
 
   @Override
   public void print(PrintStream target) {
-    target.println(super.title);
+    target.println(title + " von " + authors.stream().map(Author::getShortDisplay).collect(Collectors.toList())); // more beauty wanted
+    target.println("====");
+    target.println(description); // TODO nice line breaks?
+    target.println("ISBN: " + ISBN);
+    target.println();
   }
 }
