@@ -17,6 +17,9 @@ public class MainApp {
         final Set<Author> authors = readAuthors();
         final Set<? extends PrintMedia> library = readAllMedia(authors);
 
+        // Output task
+        library.forEach(m -> m.print(System.out));
+
     }
 
     private static Set<? extends PrintMedia> readAllMedia(Set<Author> authors) {
