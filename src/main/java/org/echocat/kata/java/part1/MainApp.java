@@ -97,6 +97,7 @@ public class MainApp {
       return Optional.empty();
     } catch (ParseException e) {
       System.err.println("found broken date format, skipping magazine »" + details[0] + "«");
+      return Optional.empty();
     }
   }
 
