@@ -19,9 +19,7 @@ public class MainApp {
 
   public static void main(String[] args) {
     final Set<Author> authors = readAuthors();
-    final Set<PrintMedia> library = new HashSet<>();
-    readBooks(library, authors);
-    readMagazines(library, authors);
+    final Set<PrintMedia> library = readBooks(readMagazines(new HashSet<>(), authors), authors);
 
     // Output task
     library.forEach(m -> m.print(System.out));
@@ -44,18 +42,20 @@ public class MainApp {
     return library.stream().filter(media -> media.authors.stream().anyMatch(author -> author.getEMail().equals(mail))).collect(Collectors.toList());
   }
 
-  protected static void readBooks(Set<PrintMedia> library, Set<Author> authors) {
+  protected static Set<PrintMedia> readBooks(Set<PrintMedia> library, Set<Author> authors) {
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/books.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
       while (scanner.hasNextLine()) parseBook(scanner.nextLine(), authors).ifPresent(library::add);
     }
+    return library;
   }
 
-  protected static void readMagazines(Set<PrintMedia> library, Set<Author> authors) {
+  protected static Set<PrintMedia> readMagazines(Set<PrintMedia> library, Set<Author> authors) {
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/magazines.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
       while (scanner.hasNextLine()) parseMagazine(scanner.nextLine(), authors).ifPresent(library::add);
     }
+    return library;
   }
 
   protected static Set<Author> readAuthors() {
