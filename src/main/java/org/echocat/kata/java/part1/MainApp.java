@@ -1,5 +1,6 @@
 package org.echocat.kata.java.part1;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -13,7 +14,7 @@ public class MainApp {
 
     protected static Set<Author> readAuthors() {
         Set<Author> authors = new HashSet<>();
-        try (Scanner scanner = new Scanner(MainApp.class.getResourceAsStream("/org/echocat/kata/java/part1/data/authors.csv"));) {
+        try (Scanner scanner = new Scanner(MainApp.class.getResourceAsStream("/org/echocat/kata/java/part1/data/authors.csv"), StandardCharsets.UTF_8)) {
             // skip header, use later for dynamic column order
             if (scanner.hasNextLine()) scanner.nextLine();
             while (scanner.hasNextLine()) {
