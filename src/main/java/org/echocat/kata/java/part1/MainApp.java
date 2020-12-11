@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ public class MainApp {
         findByMail(library, "null-walter@echocat.org").forEach(printMedia -> printMedia.print(System.out));
 
         // task 5
-        library.stream().sorted((printMedia, t1) -> printMedia.title.compareTo(t1.title)).forEach(printMedia -> printMedia.print(System.out));
+        library.stream().sorted(Comparator.comparing(printMedia -> printMedia.title)).forEach(printMedia -> printMedia.print(System.out));
     }
 
     private static Optional<? extends PrintMedia> findByISBN(Set<? extends PrintMedia> library, String isbn) {
