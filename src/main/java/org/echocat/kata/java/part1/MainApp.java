@@ -19,7 +19,9 @@ public class MainApp {
 
   public static void main(String[] args) {
     final Set<Author> authors = readAuthors();
-    final Set<? extends PrintMedia> library = readAllMedia(authors);
+    final Set<PrintMedia> library = new HashSet<>();
+    readBooks(library, authors);
+    readMagazines(library, authors);
 
     // Output task
     library.forEach(m -> m.print(System.out));
@@ -42,28 +44,18 @@ public class MainApp {
     return library.stream().filter(media -> media.authors.stream().anyMatch(author -> author.getEMail().equals(mail))).collect(Collectors.toList());
   }
 
-  private static Set<? extends PrintMedia> readAllMedia(Set<Author> authors) {
-    Set<PrintMedia> media = new HashSet<>(readBooks(authors));
-    media.addAll(readMagazines(authors));
-    return media;
-  }
-
-  protected static Set<? extends PrintMedia> readBooks(Set<Author> authors) {
-    Set<Book> books = new HashSet<>();
+  protected static void readBooks(Set<PrintMedia> library, Set<Author> authors) {
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/books.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
-      while (scanner.hasNextLine()) parseBook(scanner.nextLine(), authors).ifPresent(books::add);
+      while (scanner.hasNextLine()) parseBook(scanner.nextLine(), authors).ifPresent(library::add);
     }
-    return books;
   }
 
-  protected static Set<? extends PrintMedia> readMagazines(Set<Author> authors) {
-    Set<Magazine> magazines = new HashSet<>();
+  protected static void readMagazines(Set<PrintMedia> library, Set<Author> authors) {
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/magazines.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
-      while (scanner.hasNextLine()) parseMagazine(scanner.nextLine(), authors).ifPresent(magazines::add);
+      while (scanner.hasNextLine()) parseMagazine(scanner.nextLine(), authors).ifPresent(library::add);
     }
-    return magazines;
   }
 
   protected static Set<Author> readAuthors() {
