@@ -23,6 +23,7 @@ public class MainAppUnitTest {
         final Set<? extends PrintMedia> books = MainApp.readBooks(MainApp.readAuthors());
         assertThat(books, isA(Set.class));
         assertThat(books.size(), is(equalTo(8)));
+        assertThat(books.iterator().next().getAuthors().iterator().next(), isA(Author.class));
     }
 
     @Test
@@ -30,6 +31,7 @@ public class MainAppUnitTest {
         final Set<? extends PrintMedia> magazines = MainApp.readMagazines(MainApp.readAuthors());
         assertThat(magazines, isA(Set.class));
         assertThat(magazines.size(), is(equalTo(6)));
+        assertThat(magazines.iterator().next().getAuthors().iterator().next(), isA(Author.class));
     }
 
 }

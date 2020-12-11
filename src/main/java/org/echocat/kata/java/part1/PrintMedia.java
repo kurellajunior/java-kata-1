@@ -15,4 +15,8 @@ public class PrintMedia {
     this.authors = authors;
     ISBN = isbn;
   }
+
+  public Set<Author> getAuthors() {
+    return authors;
+  }
 }
