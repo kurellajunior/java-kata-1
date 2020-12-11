@@ -62,8 +62,6 @@ public class MainApp {
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/magazines.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
       while (scanner.hasNextLine()) parseMagazine(scanner.nextLine(), authors).ifPresent(magazines::add);
-    } catch (ParseException e) {
-      System.err.println("found broken date format, input aborted: " + e);
     }
     return magazines;
   }
@@ -82,21 +80,23 @@ public class MainApp {
     try {
       final Set<Author> authorSet = parseAuthorRefs(authors, details[2]);
       return Optional.of(new Book(details[0], authorSet, details[1], details[3]));
-    } catch (Exception e) {
+    } catch (NoSuchElementException e) {
       System.err.println("missing author. skipping book »" + details[0] + "«");
       return Optional.empty();
     }
   }
 
-  private static Optional<Magazine> parseMagazine(String csvLine, Set<Author> authors) throws ParseException {
+  private static Optional<Magazine> parseMagazine(String csvLine, Set<Author> authors) {
     final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     final String[] details = csvLine.split(SEP);
     try {
       final Set<Author> authorSet = parseAuthorRefs(authors, details[2]);
       return Optional.of(new Magazine(details[0], authorSet, details[1], sdf.parse(details[3])));
-    } catch (Exception e) {
+    } catch (NoSuchElementException e) {
       System.err.println("missing author. skipping magazine »" + details[0] + "«");
       return Optional.empty();
+    } catch (ParseException e) {
+      System.err.println("found broken date format, skipping magazine »" + details[0] + "«");
     }
   }
 
