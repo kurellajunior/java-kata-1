@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -55,6 +56,8 @@ public class MainApp {
             while (scanner.hasNextLine()) {
                 books.add(parseBook(scanner.nextLine(), authors));
             }
+        } catch (NoSuchElementException e) {
+            System.err.println("missing author in books, input aborted: " + e);
         }
         return books;
     }
@@ -68,7 +71,9 @@ public class MainApp {
                 magazines.add(parseMagazine(scanner.nextLine(), authors));
             }
         } catch (ParseException e) {
-            System.err.println("found broken date format, input aborted:" + e);
+            System.err.println("found broken date format, input aborted: " + e);
+        } catch (NoSuchElementException e) {
+            System.err.println("missing author in magazines, input aborted: " + e);
         }
         return magazines;
     }
@@ -107,7 +112,7 @@ public class MainApp {
     private static  Author fetchAuthor(String authorEMail, Set<Author> authors) {
         // TODO unsauber ohne check
         // TODO convert authors to HashMap for lookup
-        return authors.stream().filter((author -> author.getEMail().equals(authorEMail))).findFirst().get();
+        return authors.stream().filter((author -> author.getEMail().equals(authorEMail))).findFirst().orElseThrow();
     }
 
     private static Author parseAuthor(String nextLine) {
