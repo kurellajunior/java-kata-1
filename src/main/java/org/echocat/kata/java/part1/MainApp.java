@@ -9,7 +9,22 @@ public class MainApp {
 
     public static void main(String[] args) {
         final Set<Author> authors = readAuthors();
+        final Set<PrintMedia> library = readAllMedia();
 
+    }
+
+    private static Set<PrintMedia> readAllMedia() {
+        Set<PrintMedia> media = readBooks();
+        media.addAll(readMagazines());
+        return media;
+    }
+
+    private static Set<? extends PrintMedia> readMagazines() {
+        return new HashSet<>();
+    }
+
+    private static Set<PrintMedia> readBooks() {
+        return new HashSet<>();
     }
 
     protected static Set<Author> readAuthors() {
