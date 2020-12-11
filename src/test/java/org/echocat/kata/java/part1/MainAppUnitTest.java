@@ -25,4 +25,11 @@ public class MainAppUnitTest {
         assertThat(books.size(), is(equalTo(8)));
     }
 
+    @Test
+    public void testReadMagazins() {
+        final Set<? extends PrintMedia> magazines = MainApp.readMagazines(MainApp.readAuthors());
+        assertThat(magazines, isA(Set.class));
+        assertThat(magazines.size(), is(equalTo(6)));
+    }
+
 }
