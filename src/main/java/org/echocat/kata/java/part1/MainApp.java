@@ -52,9 +52,7 @@ public class MainApp {
     Set<Book> books = new HashSet<>();
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/books.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
-      while (scanner.hasNextLine()) books.add(parseBook(scanner.nextLine(), authors));
-    } catch (NoSuchElementException e) {
-      System.err.println("missing author in books, input aborted: " + e);
+      while (scanner.hasNextLine()) parseBook(scanner.nextLine(), authors).ifPresent(books::add);
     }
     return books;
   }
@@ -81,13 +79,18 @@ public class MainApp {
     return authors;
   }
 
-  private static Book parseBook(String csvLine, Set<Author> authors) {
+  private static Optional<Book> parseBook(String csvLine, Set<Author> authors) {
     final String[] details = csvLine.split(SEP);
-    // TODO evaluate format stability and add safeguards
-    return new Book(details[0],
-                    parseAuthorRefs(authors, details[2]),
-                    details[1],
-                    details[3]);
+    try {
+      final Set<Author> authorSet = parseAuthorRefs(authors, details[2]);
+      return Optional.of(new Book(details[0],
+                                  authorSet,
+                                  details[1],
+                                  details[3]));
+    } catch (Exception e) {
+      System.err.println("missing author. skipping »" + details[0] + "«");
+      return Optional.empty();
+    }
   }
 
   private static Magazine parseMagazine(String csvLine, Set<Author> authors) throws ParseException {
