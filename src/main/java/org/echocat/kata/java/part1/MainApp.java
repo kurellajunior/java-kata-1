@@ -1,31 +1,35 @@
 package org.echocat.kata.java.part1;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MainApp {
 
+    public static final String SEP = ";";
+
     public static void main(String[] args) {
         final Set<Author> authors = readAuthors();
-        final Set<? extends PrintMedia> library = readAllMedia();
+        final Set<? extends PrintMedia> library = readAllMedia(authors);
 
     }
 
-    private static Set<? extends PrintMedia> readAllMedia() {
-        Set<PrintMedia> media = new HashSet<>(readBooks());
+    private static Set<? extends PrintMedia> readAllMedia(Set<Author> authors) {
+        Set<PrintMedia> media = new HashSet<>(readBooks(authors));
         media.addAll(readMagazines());
         return media;
     }
 
-    private static Set<? extends PrintMedia> readBooks() {
+    protected static Set<? extends PrintMedia> readBooks(Set<Author> authors) {
         Set<Book> books = new HashSet<>();
         try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/books.csv")) {
             // skip header, use later for dynamic column order
             if (scanner.hasNextLine()) scanner.nextLine();
             while (scanner.hasNextLine()) {
-                books.add(parseBook(scanner.nextLine()));
+                books.add(parseBook(scanner.nextLine(), authors));
             }
         }
         return books;
@@ -55,8 +59,15 @@ public class MainApp {
         return authors;
     }
 
-    private static Book parseBook(String csvLine) {
-        return null;
+    private static Book parseBook(String csvLine, Set<Author> authors) {
+        final String[] details = csvLine.split(SEP);
+        // TODO evaluate format stability and add safeguards
+        return new Book(details[0], Arrays.stream(details[2].split(",")).map((authorMail)->fetchAuthor(authorMail, authors)).collect(Collectors.toSet()), details[1], details[2]);
+    }
+
+    private static  Author fetchAuthor(String authorEMail, Set<Author> authors) {
+        // TODO unsauber ohne check
+        return authors.stream().filter((author -> author.getEMail().equals(authorEMail))).findFirst().get();
     }
 
     private static Magazine parseMagazine(String csvLine) {
@@ -64,8 +75,7 @@ public class MainApp {
     }
 
     private static Author parseAuthor(String nextLine) {
-        final String sep = ";";
-        final String[] details = nextLine.split(sep);
+        final String[] details = nextLine.split(SEP);
         // TODO evaluate format stability and add safeguards
         return new Author(details[1], details[2], details[0]);
     }
