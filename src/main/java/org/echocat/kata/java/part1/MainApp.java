@@ -61,11 +61,9 @@ public class MainApp {
     Set<Magazine> magazines = new HashSet<>();
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/magazines.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
-      while (scanner.hasNextLine()) magazines.add(parseMagazine(scanner.nextLine(), authors));
+      while (scanner.hasNextLine()) parseMagazine(scanner.nextLine(), authors).ifPresent(magazines::add);
     } catch (ParseException e) {
       System.err.println("found broken date format, input aborted: " + e);
-    } catch (NoSuchElementException e) {
-      System.err.println("missing author in magazines, input aborted: " + e);
     }
     return magazines;
   }
@@ -83,23 +81,23 @@ public class MainApp {
     final String[] details = csvLine.split(SEP);
     try {
       final Set<Author> authorSet = parseAuthorRefs(authors, details[2]);
-      return Optional.of(new Book(details[0],
-                                  authorSet,
-                                  details[1],
-                                  details[3]));
+      return Optional.of(new Book(details[0], authorSet, details[1], details[3]));
     } catch (Exception e) {
-      System.err.println("missing author. skipping »" + details[0] + "«");
+      System.err.println("missing author. skipping book »" + details[0] + "«");
       return Optional.empty();
     }
   }
 
-  private static Magazine parseMagazine(String csvLine, Set<Author> authors) throws ParseException {
+  private static Optional<Magazine> parseMagazine(String csvLine, Set<Author> authors) throws ParseException {
+    final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     final String[] details = csvLine.split(SEP);
-    // TODO evaluate format stability and add safeguards
-    return new Magazine(details[0],
-                        parseAuthorRefs(authors, details[2]),
-                        details[1],
-                        new SimpleDateFormat("dd.MM.yyyy").parse(details[3]));
+    try {
+      final Set<Author> authorSet = parseAuthorRefs(authors, details[2]);
+      return Optional.of(new Magazine(details[0], authorSet, details[1], sdf.parse(details[3])));
+    } catch (Exception e) {
+      System.err.println("missing author. skipping magazine »" + details[0] + "«");
+      return Optional.empty();
+    }
   }
 
   /**
