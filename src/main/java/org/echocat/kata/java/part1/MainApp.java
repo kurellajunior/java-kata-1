@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
@@ -21,12 +22,19 @@ public class MainApp {
         // Output task
         library.forEach(m -> m.print(System.out));
 
-        // find by isbn
-        findBy(library,"3214-5698-7412").ifPresent(m -> m.print(System.out));
+        // task 3
+        findByISBN(library, "3214-5698-7412").ifPresent(m -> m.print(System.out));
+
+        // task 4
+        findByMail(library, "null-walter@echocat.org").forEach(printMedia -> printMedia.print(System.out));
     }
 
-    private static Optional<? extends PrintMedia> findBy(Set<? extends PrintMedia> library, String isbn) {
+    private static Optional<? extends PrintMedia> findByISBN(Set<? extends PrintMedia> library, String isbn) {
         return library.stream().filter(media -> media.ISBN.equals(isbn)).findFirst();
+    }
+
+    private static List<? extends PrintMedia> findByMail(Set<? extends PrintMedia> library, String mail) {
+        return library.stream().filter(media -> media.authors.stream().anyMatch(author -> author.getEMail().equals(mail))).collect(Collectors.toList());
     }
 
     private static Set<? extends PrintMedia> readAllMedia(Set<Author> authors) {
