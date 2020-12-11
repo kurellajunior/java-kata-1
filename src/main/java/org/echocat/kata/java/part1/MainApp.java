@@ -11,6 +11,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class MainApp {
@@ -19,7 +20,9 @@ public class MainApp {
 
   public static void main(String[] args) {
     final Set<Author> authors = readAuthors();
-    final Set<PrintMedia> library = readBooks(readMagazines(new HashSet<>(), authors), authors);
+    final Set<PrintMedia> library = new HashSet<>();
+    readMedia(library, authors, MainApp::parseBook, "/org/echocat/kata/java/part1/data/books.csv");
+    readMedia(library, authors, MainApp::parseMagazine, "/org/echocat/kata/java/part1/data/magazines.csv");
 
     // Output task
     library.forEach(m -> m.print(System.out));
@@ -42,20 +45,11 @@ public class MainApp {
     return library.stream().filter(media -> media.authors.stream().anyMatch(author -> author.getEMail().equals(mail))).collect(Collectors.toList());
   }
 
-  protected static Set<PrintMedia> readBooks(Set<PrintMedia> library, Set<Author> authors) {
-    try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/books.csv")) {
+  protected static void readMedia(Set<PrintMedia> library, Set<Author> authors, BiFunction<String, Set<Author>, Optional<? extends PrintMedia>> parse, String source) {
+    try (Scanner scanner = getScannerFor(source)) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
-      while (scanner.hasNextLine()) parseBook(scanner.nextLine(), authors).ifPresent(library::add);
+      while (scanner.hasNextLine()) parse.apply(scanner.nextLine(), authors).ifPresent(library::add);
     }
-    return library;
-  }
-
-  protected static Set<PrintMedia> readMagazines(Set<PrintMedia> library, Set<Author> authors) {
-    try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/magazines.csv")) {
-      if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
-      while (scanner.hasNextLine()) parseMagazine(scanner.nextLine(), authors).ifPresent(library::add);
-    }
-    return library;
   }
 
   protected static Set<Author> readAuthors() {
@@ -67,7 +61,7 @@ public class MainApp {
     return authors;
   }
 
-  private static Optional<Book> parseBook(String csvLine, Set<Author> authors) {
+  static Optional<Book> parseBook(String csvLine, Set<Author> authors) {
     final String[] details = csvLine.split(SEP);
     try {
       final Set<Author> authorSet = parseAuthorRefs(authors, details[2]);
@@ -78,7 +72,7 @@ public class MainApp {
     }
   }
 
-  private static Optional<Magazine> parseMagazine(String csvLine, Set<Author> authors) {
+  static Optional<Magazine> parseMagazine(String csvLine, Set<Author> authors) {
     final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     final String[] details = csvLine.split(SEP);
     try {
