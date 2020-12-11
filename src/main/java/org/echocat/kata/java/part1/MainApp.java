@@ -19,7 +19,7 @@ public class MainApp {
   public static final String SEP = ";";
 
   public static void main(String[] args) {
-    final Set<Author> authors = readAuthors();
+    final Set<Author> authors = readAuthors(new HashSet<Author>());
     final Set<PrintMedia> library = new HashSet<>();
     readMedia(library, authors, MainApp::parseBook, "/org/echocat/kata/java/part1/data/books.csv");
     readMedia(library, authors, MainApp::parseMagazine, "/org/echocat/kata/java/part1/data/magazines.csv");
@@ -52,8 +52,7 @@ public class MainApp {
     }
   }
 
-  protected static Set<Author> readAuthors() {
-    Set<Author> authors = new HashSet<>();
+  protected static Set<Author> readAuthors(Set<Author> authors) {
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/authors.csv")) {
       if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
       while (scanner.hasNextLine()) authors.add(parseAuthor(scanner.nextLine()));
@@ -104,7 +103,6 @@ public class MainApp {
 
   private static Author parseAuthor(String nextLine) {
     final String[] details = nextLine.split(SEP);
-    // TODO evaluate format stability and add safeguards
     return new Author(details[1], details[2], details[0]);
   }
 
