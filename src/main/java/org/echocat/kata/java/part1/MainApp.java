@@ -1,13 +1,17 @@
 package org.echocat.kata.java.part1;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class MainApp {
 
     public static void main(String[] args) {
-        System.out.println(getHelloWorldText());
+        final Set<Author> authors = readAuthors();
+
     }
 
-    protected static String getHelloWorldText() {
-        return "Hello world!";
+    protected static Set<Author> readAuthors() {
+        return Collections.emptySet();
     }
 
 }
