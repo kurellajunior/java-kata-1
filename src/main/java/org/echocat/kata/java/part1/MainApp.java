@@ -19,7 +19,7 @@ public class MainApp {
   public static final String SEP = ";";
 
   public static void main(String[] args) {
-    final Set<Author> authors = readAuthors(new HashSet<Author>());
+    final Set<Author> authors = readAuthors(new HashSet<>());
     final Set<PrintMedia> library = new HashSet<>();
     readMedia(library, authors, MainApp::parseBook, "/org/echocat/kata/java/part1/data/books.csv");
     readMedia(library, authors, MainApp::parseMagazine, "/org/echocat/kata/java/part1/data/magazines.csv");
