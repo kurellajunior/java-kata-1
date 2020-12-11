@@ -27,6 +27,9 @@ public class MainApp {
 
         // task 4
         findByMail(library, "null-walter@echocat.org").forEach(printMedia -> printMedia.print(System.out));
+
+        // task 5
+        library.stream().sorted((printMedia, t1) -> printMedia.title.compareTo(t1.title)).forEach(printMedia -> printMedia.print(System.out));
     }
 
     private static Optional<? extends PrintMedia> findByISBN(Set<? extends PrintMedia> library, String isbn) {
