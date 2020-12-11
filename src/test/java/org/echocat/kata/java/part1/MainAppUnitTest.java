@@ -15,7 +15,7 @@ public class MainAppUnitTest {
     public void testReadAuthors() {
         final Set<Author> authors = MainApp.readAuthors();
         assertThat(authors, isA(Set.class));
-        assertThat(authors.size(), is(equalTo(1)));
+        assertThat(authors.size(), is(equalTo(6)));
     }
 
 }
