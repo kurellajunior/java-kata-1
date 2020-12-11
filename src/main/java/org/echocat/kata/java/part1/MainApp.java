@@ -51,11 +51,8 @@ public class MainApp {
   protected static Set<? extends PrintMedia> readBooks(Set<Author> authors) {
     Set<Book> books = new HashSet<>();
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/books.csv")) {
-      // skip header, use later for dynamic column order
-      if (scanner.hasNextLine())  scanner.nextLine();
-      while (scanner.hasNextLine()) {
-        books.add(parseBook(scanner.nextLine(), authors));
-      }
+      if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
+      while (scanner.hasNextLine()) books.add(parseBook(scanner.nextLine(), authors));
     } catch (NoSuchElementException e) {
       System.err.println("missing author in books, input aborted: " + e);
     }
@@ -65,11 +62,8 @@ public class MainApp {
   protected static Set<? extends PrintMedia> readMagazines(Set<Author> authors) {
     Set<Magazine> magazines = new HashSet<>();
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/magazines.csv")) {
-      // skip header, use later for dynamic column order
-      if (scanner.hasNextLine())  scanner.nextLine();
-      while (scanner.hasNextLine()) {
-        magazines.add(parseMagazine(scanner.nextLine(), authors));
-      }
+      if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
+      while (scanner.hasNextLine()) magazines.add(parseMagazine(scanner.nextLine(), authors));
     } catch (ParseException e) {
       System.err.println("found broken date format, input aborted: " + e);
     } catch (NoSuchElementException e) {
@@ -81,11 +75,8 @@ public class MainApp {
   protected static Set<Author> readAuthors() {
     Set<Author> authors = new HashSet<>();
     try (Scanner scanner = getScannerFor("/org/echocat/kata/java/part1/data/authors.csv")) {
-      // skip header, use later for dynamic column order
-      if (scanner.hasNextLine())  scanner.nextLine();
-      while (scanner.hasNextLine()) {
-        authors.add(parseAuthor(scanner.nextLine()));
-      }
+      if (scanner.hasNextLine())  scanner.nextLine(); // skip header, use later for dynamic column order
+      while (scanner.hasNextLine()) authors.add(parseAuthor(scanner.nextLine()));
     }
     return authors;
   }
